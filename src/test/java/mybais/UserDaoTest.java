@@ -16,7 +16,7 @@ import java.io.InputStream;
 import java.util.Date;
 
 public class UserDaoTest {
-/**
+
      private SqlSessionFactory sqlSessionFactory = null;
 
     @Before
@@ -47,19 +47,7 @@ public class UserDaoTest {
         user.setBirthday(new Date());
         userDao.insertUser(user);
     }
-**/
 
-//spring管理方法
-    private ApplicationContext applicationContext;
-    @Before
-    public void setup() {
-        applicationContext = new ClassPathXmlApplicationContext("spring/ApplicationContex.xml");
-                }
-    @Test
-    public void testFindUserById(){
-        UserDao userDao = (UserDao) applicationContext.getBean("userDao");
 
-        User userById = userDao.findUserById(1);
-        System.out.println(userById);
-    }
+
 }

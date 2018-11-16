@@ -13,7 +13,7 @@ public class UserDaoImpl extends SqlSessionDaoSupport implements UserDao {
     /**
      * mybatis不使用spring管理的方法
      * */
-    /**
+
     private SqlSessionFactory sqlSessionFactory;
 
     public UserDaoImpl() {
@@ -38,19 +38,6 @@ public class UserDaoImpl extends SqlSessionDaoSupport implements UserDao {
         sqlSession.insert("test.insertUser",user);
         sqlSession.close();
     }
- **/
-    @Override
-    public User findUserById(Integer id) {
-        SqlSession sqlSession = this.getSqlSession();
-        User user =sqlSession.selectOne("test.findUserById",id);
 
-        return (User) user;
-    }
-    @Override
-    public void insertUser(User user) {
-        SqlSession sqlSession = this.getSqlSession();
-
-        sqlSession.insert("test.insertUser",user);
-    }
 
 }
