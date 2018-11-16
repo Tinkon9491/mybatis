@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE  configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!--<properties resource="db.properties">-->
+        <!--<property name="db.username" value="root"/>-->
+        <!--<property name="db.password" value="root"/>-->
+    <!--</properties>-->
+
+    <!-- typeAliases标签：配置自定义别名 -->
+    <typeAliases>
+        <!--<typeAlias type="cn.timon.pojo.User" alias="user" />-->
+        <!-- 以包扫描的方式，配置自定义别名，说明：
+         别名就是类名，不区分大小写
+         -->
+        <package name="cn.timon.pojo"/>
+    </typeAliases>
+
+    <!--使用spring后把数据源交给spring管理-->
+    <!--&lt;!&ndash; 运行环境配置 &ndash;&gt;-->
+    <!--&lt;!&ndash; default：指定当前使用的运行环境 &ndash;&gt;-->
+    <!--<environments default="development">-->
+        <!--&lt;!&ndash; 配置运行环境，id属性：唯一标识 &ndash;&gt;-->
+        <!--<environment id="development">-->
+            <!--&lt;!&ndash; 事务管理器配置，JDBC：默认使用jdbc事务 &ndash;&gt;-->
+            <!--<transactionManager type="JDBC"/>-->
+            <!--&lt;!&ndash; 数据源配置，POOLED：mybatis提供的连接池 &ndash;&gt;-->
+            <!--<dataSource type="POOLED">-->
+                <!--&lt;!&ndash;<property name="driver" value="com.mysql.jdbc.Driver"/>&ndash;&gt;-->
+                <!--&lt;!&ndash;<property name="url" value="jdbc:mysql://127.0.0.1:3306/71_mybatis?characterEncoding=utf-8"/>&ndash;&gt;-->
+                <!--&lt;!&ndash;<property name="username" value="root"/>&ndash;&gt;-->
+                <!--&lt;!&ndash;<property name="password" value="root"/>&ndash;&gt;-->
+                <!--<property name="driver" value="${db.driver}"/>-->
+                <!--<property name="url" value="${db.url}"/>-->
+                <!--<property name="username" value="${db.username}"/>-->
+                <!--<property name="password" value="${db.password}"/>-->
+
+            <!--</dataSource>-->
+        <!--</environment>-->
+    <!--</environments>-->
+
+    <mappers>
+        <!--<package name="cn.timon.mapper" />-->
+        <mapper resource="sqlmap/User.xml" />
+
+        <!--<mapper class="cn.timon.mapper.UserMapper" />-->
+        <!--使用包扫描批量-->
+        <package name="cn.timon.mapper" />
+    </mappers>
+
+</configuration>

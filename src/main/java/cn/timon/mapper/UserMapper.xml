@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--
+    mapper接口代理实现编写规则
+    1：映射文件中namespace要等于接口的全路径名称
+    2：映射文件中sql语句id要等于接口的方法名称
+    3：映射文件中传入参数类型要等于接口方法的输入参数类型
+    4：映射文件中返回的类型等于接口方法的返回类型
+-->
+    <mapper namespace="cn.timon.mapper.UserMapper">
+        <select id="queryUserById" parameterType="java.lang.Integer" resultType="user">
+            select * from `user` where id=#{id}
+        </select>
+
+        <insert id="insertUser" parameterType="user" 	useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+            insert  into `user`(username,birthday,sex,address)
+              values(#{username},#{birthday},#{sex},#{address})
+        </insert>
+
+
+        <update id="updateUser" parameterType="user">
+            update `user`
+            set username=#{username},sex=#{sex} where id=#{id}
+        </update>
+
+        <delete id="deleteUserById" parameterType="java.lang.Integer">
+          delete from `user` where id=#{id}
+        </delete>
+
+    <!--高级查询 -->
+    <select id="findUserByVo" parameterType="cn.timon.pojo.QueryVo" resultType="user">
+       select  * from `user` where username like "%${user.username}%" and sex =#{user.sex}
+    </select>
+    <select id="findUserCount" resultType="java.lang.Integer">
+        select count(*) from `user`
+    </select>
+
+    <select id="findUserByIds" parameterType="cn.timon.pojo.QueryVo" resultType="user">
+        select * from `user`
+        <where>
+            <if test="ids !=null">
+                <foreach collection="ids" item="id" open="id in (" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <!-- 一对一：自动映射-->
+    <select id="findOrdersAndUser1" resultType="cn.timon.pojo.CustomOrders">
+        select a.*,b.id uid,username,birthday,sex,address
+        from  orders a,`user` b
+        where a.user_id=b.id
+    </select>
+    <!-- 一对一：手动映射
+    type属性：映射的类型
+	id属性：唯一标识，通过id引用该resultMap
+    -->
+    <resultMap type="cn.timon.pojo.Orders" id="ordersUsersResultMap">
+        <!-- 配置订单的主键对应关系 -->
+        <id column="id" property="id"/>
+        <!-- 配置订单普通字段对应关系 -->
+        <result column="user_id" property="userId"/>
+        <result column="number" property="number"/>
+        <result column="createtime" property="createtime"/>
+        <result column="note" property="note"/>
+        <!-- association标签：用于配置一对一关联关系，说明：
+		 property属性：映射的属性名称
+		 javaType属性：映射的属性类型（必须要指定）-->
+        <association property="user" javaType="User">
+            <!--配置用户的主键对应关系  -->
+            <id column="uid" property="id"/>
+
+            <!-- 配置用户普通字段对应关系 -->
+            <result column="username" property="username"/>
+            <result column="birthday" property="birthday"/>
+            <result column="sex" property="sex"/>
+            <result column="address" property="address"/>
+        </association>
+    </resultMap>
+    <select id="findOrdersAndUser2" resultMap="ordersUsersResultMap">
+        select a.*,b.id uid,username,birthday,sex,address
+        from  orders a,`user` b
+        where a.user_id=b.id
+    </select>
+    
+    <!-- 一对多-->
+    <resultMap id="usersOrdersResultMap" type="cn.timon.pojo.User">
+        <!-- 配置用户的主键对应关系 -->
+        <id column="id" property="id"/>
+        <!-- 配置用户普通字段对应关系 -->
+        <result column="username" property="username"/>
+        <result column="birthday" property="birthday"/>
+        <result column="sex" property="sex"/>
+        <result column="address" property="address"/>
+        <!-- collection标签：配置一对多关联关系,说明：
+		 property属性：映射的属性名称
+		 javaType属性：映射的属性类型（可以指定，可以不指定，建议指定）
+		 ofType属性：集合中存放的类型（必须要指定）-->
+        <collection property="ordersList" ofType="cn.timon.pojo.Orders">
+            <!-- 配置订单的主键对应关系 -->
+            <id column="oid" property="id"/>
+            <!-- 配置订单普通字段对应关系 -->
+            <result column="user_id" property="userId"/>
+            <result column="number" property="number"/>
+            <result column="createtime" property="createtime"/>
+            <result column="note" property="note"/>
+        </collection>
+    </resultMap>
+    <select id="findUserAndOrders" resultMap="usersOrdersResultMap">
+        select a.*,b.id oid,user_id,number,createtime,note
+        from `user` a,orders b
+        where a.id = b.user_id
+    </select>
+</mapper>

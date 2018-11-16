@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- namespace:命名空间使sql隔离-->
+<mapper namespace="test">
+    <!--
+        id：sql唯一标识
+        parameterType：输入参数类型
+        resultType：返回结果类型
+        #{}占位符：起到占位作用，如果输入的是基本类型（string，long，double，int，Boolean，float等），那么#{}中的变量可以随便写
+    -->
+    <select id="findUserById" parameterType="java.lang.Integer" resultType="cn.timon.pojo.User">
+        select * from `user` where id=#{id}
+    </select>
+
+    <!--
+        如果返回的结果为集合，可以调用selectList方法，这个方法返回的结果就是一个集合，所以映射文件中应该配置成集合泛型的类型
+        ${}拼接符，字符串原样拼接，如果输入的是基本类型（string，long，double，int，Boolean，float等），那么${}中的变量名称必须是value
+    -->
+    <select id="findUserByUserName" parameterType="java.lang.String" resultType="cn.timon.pojo.User">
+        select  * from `user` where username like '%${value}%'
+    </select>
+
+
+    <!-- 新增一个用户，说明：
+	 insert标签：用于放置新增sql语句
+	 #{}占位符：当参数传递的是pojo类型，花括号中的内容是pojo的属性-->
+    <insert id="insertUser" parameterType="cn.timon.pojo.User">
+        <!-- 获取自增长的用户id，说明：
+		 selectKey标签：查询主键
+		 keyColumn属性：指定主键字段（表）
+		 keyProperty属性：主键属性（pojo）
+		 resultType属性：主键字段的类型
+		 order属性：指定在insert语句执行前，还是执行后获取主键值.
+		 BEFORE:在insert语句执行前；AFTER:在insert语句执行后
+		 -->
+        <!--<selectKey keyColumn="id" keyProperty="id" resultType="int" order="AFTER">-->
+            <!--select LAST_INSERT_ID()-->
+        <!--</selectKey>-->
+          insert into `user`(id,username,birthday,sex,address)
+		  values(#{id},#{username},#{birthday},#{sex},#{address})
+    </insert>
+
+    <!-- 根据用户id修改用户，说明：
+	 update标签：用于放置修改sql语句 -->
+    <update id="updateUser" parameterType="cn.timon.pojo.User">
+        update `user`
+        set username=#{username},sex=#{sex} where id=#{id}
+  </update>
+
+    <!-- 根据用户id删除用户,说明：
+	 delete标签：用于放置删除sql语句 -->
+    <delete id="deleteUserById" parameterType="java.lang.Integer">
+      delete from `user` where id=#{id}
+  </delete>
+</mapper>
